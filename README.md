@@ -175,6 +175,108 @@ v-model 修饰符
 	* Vue 使用 $ 前缀通过组件实例暴露自己的内置 API。它还为内部 property 保留 _ 前缀。你应该避免使用这两个字符开头的顶级 data property 名称。
 
 2. 方法：我们用 methods 选项向组件实例添加方法，他是一个对象
+3. 防抖和节流： VUE 没有内置的防抖和节流，但可以使用 lodash
+
+### 计算属性和侦听器
+1. computed: 响应式数据的复杂逻辑处理，是一个对象，对象里面包含函数
+2. 计算属性喝函数（method）的区别：计算属性将基于他么的响应依赖关系进行缓存，也就是说当他依赖的属性不变化的时候，不会执行该计算属性而是直接获取缓存的结果。
+3. 计算属性的 setter
+	```
+	// ...
+	computed: {
+	  fullName: {
+	    // getter
+	    get() {
+	      return this.firstName + ' ' + this.lastName
+	    },
+	    // setter
+	    set(newValue) {
+	      const names = newValue.split(' ')
+	      this.firstName = names[0]
+	      this.lastName = names[names.length - 1]
+	    }
+	  }
+	}
+	// ...
+	```
+4. 侦听器： watch 对象
+
+### Class 与 Style 绑定
+1. 对象语法: :class = v-bind:class
+	```
+		<div :class = "{active: isActive, 'text-danger': hasError}"></div>
+	```
+2. 数组语法
+	```
+	<div :class = "[activeClass, errorClass]"></div>
+	
+	data() {
+		return {
+			activeClass: "active",
+			errorClass: "text-danger"
+		}
+	}
+	```
+3. 内联样式
+	```
+	<div :style="styleObject"></div>
+	<div :style="[baseStyles, theOtnerStyles]"></div>
+	
+	data(){
+		return {
+			styleObject: {
+				color: "red",
+				fontSize: "13px"
+			}
+		}
+	}
+	```
+	
+### 条件渲染
+1. v-if 
+	```
+	<h1 v-if="awesome">Vue is awesome</h1>
+	<h1 v-else>Oh no</h1>
+	```
+2. 在 <template> 元素上使用 v-if 条件渲染分组
+3. v-else: v-else 必须紧跟在带 v-if 或者 v-else-if 的元素的后面，否则他将不被识别
+4. v-show 和 v-if 的区别
+	* v-if 是真正的条件渲染，因为他确保在切换中，条件块内的事件监听和子组件适当的被销毁和重建
+	* v-if 是惰性的，如果初始条件为假，则什么都不会做
+	* v-show 无论什么条件下都会渲染元素，只是简单的基于 CSS  切换
+	* 总结：v-if 有更好的切换开销，v-show 有更高的渲染开销。因此，如果需要频繁切换，使用 v-show,如果是运行条件很少改变时使用 v-if
+### 列表渲染
+1. v-for 使用数组, 也可以使用 of 代替 in
+	```
+	<ul id="array-rendering">
+	  <li v-for="item in items">
+	    {{ item.message }}
+	  </li>
+	</ul>
+	``` 
+2. v-for 里使用对象
+3. :key = item.id
+4. template 上使用 v-for
+### 事件处理
+1. 事件修饰符, 修饰符可以串联
+	* .stop
+	```
+	<!--阻止单击事件继续冒泡-->
+	<a @click.stop="doSth()" />
+	```
+	* .prevent
+	```
+	<!--提交事件不再重载页面-->
+	<form @submit.prevent="onSubmit"></form>
+	```
+	* .capture
+	* .self
+	* .once
+	* .passive
+2. @click.prevent.self 会阻止元素本身和其子元素的点击默认行为，而 @click.self.prevent 只会阻止对元素自身的点击默认行为
+3. 按键修饰符
+### 表单输入绑定
+### 
 ***************************
 ### 单文件组件
 Vue 单文件组件：也叫 .vue 文件，缩写 SFC, 他允许将 VUE 组件的模板逻辑与样式封装在单个文件中
